@@ -10,6 +10,7 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +56,7 @@ class _ListPageState extends State<ListPage> {
                   }));
             }
           },
-        ));
+        ),
+        );
   }
 }
