@@ -1,4 +1,5 @@
 import 'package:crud_provider/list.dart';
+import 'package:crud_provider/menu.dart';
 import 'package:crud_provider/provider/mahasiswa_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: MultiProvider(providers: [
         ChangeNotifierProvider(create: ((context) => MahasiswaProvider()))
-      ], child: ListPage()),
+      ], child: MenuPage()),
     );
   }
 }
