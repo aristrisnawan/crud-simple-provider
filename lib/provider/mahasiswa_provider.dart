@@ -10,9 +10,25 @@ class MahasiswaProvider extends ChangeNotifier {
   List<MahasiswaModel> get dataMhs => _dataMhs;
 
   Future<void> getDataMhs() async {
-    final response = await http.get(Uri.parse("https://x8ki-letl-twmt.n7.xano.io/api:O3_Qi3tw/student"));
+    final response = await http.get(
+        Uri.parse("https://x8ki-letl-twmt.n7.xano.io/api:O3_Qi3tw/student"));
     final List<dynamic> data = json.decode(response.body);
     _dataMhs = data.map((json) => MahasiswaModel.fromJson(json)).toList();
     notifyListeners();
+  }
+
+  Future<void> addData(MahasiswaModel data) async {
+    final response = await http.post(
+      Uri.parse("https://x8ki-letl-twmt.n7.xano.io/api:O3_Qi3tw/student"),
+      body: json.encode({'name': data.name, 'nim': data.nim}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      _dataMhs.add(data);
+      notifyListeners();
+    } else {
+      throw Exception('Failed add data');
+    }
   }
 }

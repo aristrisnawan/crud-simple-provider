@@ -1,4 +1,10 @@
+import 'package:crud_provider/list.dart';
+import 'package:crud_provider/main.dart';
+import 'package:crud_provider/model/mahasiswa_model.dart';
+import 'package:crud_provider/provider/mahasiswa_provider.dart';
+import 'package:d_info/d_info.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -8,6 +14,8 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nimController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +29,7 @@ class _AddPageState extends State<AddPage> {
             child: Column(
               children: [
                 TextFormField(
+                  controller: _nameController,
                   obscureText: false,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -32,6 +41,7 @@ class _AddPageState extends State<AddPage> {
                   height: 10,
                 ),
                 TextFormField(
+                  controller: _nimController,
                   obscureText: false,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -46,13 +56,37 @@ class _AddPageState extends State<AddPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(onPressed: () {}, child: Text("Reset"), style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red
-                    ),),
+                    ElevatedButton(
+                      onPressed: () {
+                        _nameController.clear();
+                        _nimController.clear();
+                      },
+                      child: Text("Reset"),
+                      style:
+                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    ),
                     SizedBox(
                       width: 20,
                     ),
-                    ElevatedButton(onPressed: () {}, child: Text("Submit")),
+                    ElevatedButton(
+                        onPressed: () async {
+                          final provider = Provider.of<MahasiswaProvider>(
+                              context,
+                              listen: false);
+                          final data = MahasiswaModel(
+                              name: _nameController.text,
+                              nim: _nimController.text);
+                          await provider.addData(data);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => ChangeNotifierProvider(
+                                      create: (context) => MahasiswaProvider(),
+                                      child: MyApp()))));
+                          DInfo.dialogSuccess(context, "Add data success");
+                          DInfo.closeDialog(context);
+                        },
+                        child: Text("Submit")),
                   ],
                 ),
               ],

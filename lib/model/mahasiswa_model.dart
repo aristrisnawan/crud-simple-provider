@@ -1,10 +1,10 @@
 class MahasiswaModel {
-  int id;
+  int? id;
   String name;
   String nim;
 
   MahasiswaModel(
-      {required this.id,
+      {this.id,
       required this.name,
       required this.nim});
 
