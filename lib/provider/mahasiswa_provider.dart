@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:crud_provider/model/mahasiswa_model.dart';
+import 'package:d_info/d_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -29,6 +30,20 @@ class MahasiswaProvider extends ChangeNotifier {
       notifyListeners();
     } else {
       throw Exception('Failed add data');
+    }
+  }
+
+  Future<void> deletData(int? id) async {
+    final response = await http.delete(
+        Uri.parse(
+            "https://x8ki-letl-twmt.n7.xano.io/api:O3_Qi3tw/student/${id}"),
+        headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      _dataMhs.removeWhere((element) => element.id == id);
+      notifyListeners();
+    } else {
+      throw Exception('Failed to delete data');
     }
   }
 }

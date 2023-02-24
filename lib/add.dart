@@ -16,6 +16,30 @@ class AddPage extends StatefulWidget {
 class _AddPageState extends State<AddPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _nimController = TextEditingController();
+  //Vlidatin form null
+  final _formKey = GlobalKey<FormState>();
+
+  submitData() async {
+    final provider = Provider.of<MahasiswaProvider>(context, listen: false);
+    final data =
+        MahasiswaModel(name: _nameController.text, nim: _nimController.text);
+
+    // if (_formKey.currentState!.validate()) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('Processing Data')),
+    //   );
+    // } else {
+    await provider.addData(data);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: ((context) => ChangeNotifierProvider(
+                create: (context) => MahasiswaProvider(), child: MyApp()))));
+    DInfo.dialogSuccess(context, "Add data success");
+    DInfo.closeDialog(context);
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,70 +50,71 @@ class _AddPageState extends State<AddPage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _nameController,
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Name',
-                    hintText: 'Enter Your Name',
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                  controller: _nimController,
-                  obscureText: false,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Nim',
-                    hintText: 'Enter Your Nim',
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _nameController.clear();
-                        _nimController.clear();
-                      },
-                      child: Text("Reset"),
-                      style:
-                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Name',
+                      hintText: 'Enter Your Name',
                     ),
-                    SizedBox(
-                      width: 20,
+                    validator: ((value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    }),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    controller: _nimController,
+                    obscureText: false,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Nim',
+                      hintText: 'Enter Your Nim',
                     ),
-                    ElevatedButton(
-                        onPressed: () async {
-                          final provider = Provider.of<MahasiswaProvider>(
-                              context,
-                              listen: false);
-                          final data = MahasiswaModel(
-                              name: _nameController.text,
-                              nim: _nimController.text);
-                          await provider.addData(data);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: ((context) => ChangeNotifierProvider(
-                                      create: (context) => MahasiswaProvider(),
-                                      child: MyApp()))));
-                          DInfo.dialogSuccess(context, "Add data success");
-                          DInfo.closeDialog(context);
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter youre nim';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _nameController.clear();
+                          _nimController.clear();
                         },
-                        child: Text("Submit")),
-                  ],
-                ),
-              ],
+                        child: Text("Reset"),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            submitData();
+                          },
+                          child: Text("Submit")),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
