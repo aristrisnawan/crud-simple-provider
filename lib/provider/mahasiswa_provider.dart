@@ -46,4 +46,22 @@ class MahasiswaProvider extends ChangeNotifier {
       throw Exception('Failed to delete data');
     }
   }
+
+  Future<void> updateData(MahasiswaModel data, ) async {
+    final response = await http.post(
+      Uri.parse(
+          "https://x8ki-letl-twmt.n7.xano.io/api:O3_Qi3tw/student/${data.id}"),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(data.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final updateIndex =
+          _dataMhs.indexWhere((element) => element.id == data.id);
+      _dataMhs[updateIndex] = data;
+      notifyListeners();
+    } else {
+      throw Exception("Failed to update data");
+    }
+  }
 }

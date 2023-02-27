@@ -1,3 +1,4 @@
+import 'package:crud_provider/model/mahasiswa_model.dart';
 import 'package:crud_provider/provider/mahasiswa_provider.dart';
 import 'package:d_info/d_info.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,7 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
-
-
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -64,7 +64,12 @@ class _ListPageState extends State<ListPage> {
                         //Action
                         Row(
                           children: [
-                            Icon(Icons.update),
+                            InkWell(
+                                onTap: () async {
+                                  dialogPopup(context, datas.name, datas.nim,
+                                      datas.id, value);
+                                },
+                                child: Icon(Icons.update)),
                             SizedBox(
                               width: 20,
                             ),
@@ -84,6 +89,59 @@ class _ListPageState extends State<ListPage> {
                 }));
           }
         },
+      ),
+    );
+  }
+
+  Future<String?> dialogPopup(BuildContext context, String name, String nim,
+      int? id, MahasiswaProvider value) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Edit Data'),
+        content: Material(
+          child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: TextEditingController(text: "${name}"),
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Name',
+                      hintText: 'Enter Your Name',
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    controller: TextEditingController(text: "${nim}"),
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Name',
+                      hintText: 'Enter Your Name',
+                    ),
+                  ),
+                ],
+              )),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, 'OK');
+              // final updateData =
+              //     value.updateData(MahasiswaModel(name: name, nim: nim), id);
+            },
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }
